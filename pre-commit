@@ -1,0 +1,71 @@
+#!/usr/bin/python
+
+from images2gif import writeGif
+from PIL import Image, ImageSequence
+import os
+import subprocess
+import string
+
+# Configuration
+frame_duration = 0.5
+
+def gifify(delta):
+	# Determine the type of edit
+	delta = delta.strip() 
+	delta = delta.replace("  ", " ") # Files can have two statuses, e.g. AM, or just A
+	edit_kind, file = delta.split(" ")
+
+	# Exclude those that are being deleted
+	# In the future we may want to also auto-delete its gifs
+	if "D" in edit_kind or "?" in edit_kind:
+		return
+	
+	# Create gifs directory
+	dir = os.path.dirname(file) 
+	if not dir: # Top level directory
+		dir = "."
+	dir = dir + "/gifs"
+	if not os.path.exists(dir):
+		os.makedirs(dir)
+
+	# Gif image
+	gif = dir + "/" + os.path.splitext(os.path.basename(file))[0] + ".gif"
+
+	# Our latest version of the image
+	im = Image.open(file)
+
+	# Constants for gif creation
+	# frame_duration = 0.5
+	
+	print gif
+	if os.path.exists(gif):
+		im_gif = Image.open(gif)
+
+		frames = [frame.copy() for frame in ImageSequence.Iterator(im_gif)] 		
+		frames.append(im)
+
+		writeGif(gif, frames, duration=frame_duration)
+	else:
+		frames = [ im ]
+		writeGif(gif, frames, duration=frame_duration)	
+
+
+	# Now add the gif to git index for committing
+	# TODO: This works fine in shell, but needs testing with the git commit
+	p = subprocess.Popen(['git','add', dir+'/*', ], stdout=subprocess.PIPE, stderr=subprocess.PIPE)			
+	p.communicate()
+
+def main():
+	# A nicer way to define the filter types would be good
+	p = subprocess.Popen(['git','status', '--porcelain', '*.png', '*.jpg', '*.jpeg'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+	out, err = p.communicate()
+
+	delta = out.splitlines(False)
+	
+	for d in delta:
+		gifify(d)
+
+
+
+if __name__ == '__main__':
+	main()
