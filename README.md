@@ -16,5 +16,6 @@ There is much that can be added to improve the hook. Here are some of those plan
 * Image scaling
 * User-specified GIF storage location
 * Option to delete gifs of any images that get deleted
+* Overlay datetime / commit message (or generate a web page showing the evolution with the commit message side-by-side)
 
 Please feel free to suggest ideas, or contribute :)
