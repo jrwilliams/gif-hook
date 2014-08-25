@@ -8,6 +8,7 @@ import string
 
 # Configuration
 frame_duration = 0.5
+filetypes = ['*.png', '*.jpg', '*.jpeg']
 
 def gifify(delta):
 	# Determine the type of edit
@@ -57,15 +58,13 @@ def gifify(delta):
 
 def main():
 	# A nicer way to define the filter types would be good
-	p = subprocess.Popen(['git','status', '--porcelain', '*.png', '*.jpg', '*.jpeg'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+	p = subprocess.Popen(['git','status', '--porcelain'] + filetypes, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	out, err = p.communicate()
 
 	delta = out.splitlines(False)
 	
 	for d in delta:
 		gifify(d)
-
-
 
 if __name__ == '__main__':
 	main()
