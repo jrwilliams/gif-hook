@@ -19,3 +19,8 @@ There is much that can be added to improve the hook. Here are some of those plan
 * Overlay datetime / commit message (or generate a web page showing the evolution with the commit message side-by-side)
 
 Please feel free to suggest ideas, or contribute :)
+
+##Example
+Here's the evolution of a landscape painting that I created earlier.
+
+![](https://github.com/jrwilliams/gif-hook/blob/master/example/gifs/landscape.gif)
